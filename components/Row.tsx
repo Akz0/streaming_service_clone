@@ -31,7 +31,7 @@ function Row({ title, movies }: Props) {
 			>
 				{title}
 			</h2>
-			<div className="group relative md:-ml-12 ">
+			<div className="group relative  md:-ml-[5rem]">
 				<ChevronLeftIcon
 					className={`absolute left-2 top-0 
                     bottom-0 z-40 m-auto h-9 w-9 cursor-pointer opacity-0 transition 

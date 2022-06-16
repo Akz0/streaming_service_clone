@@ -2,9 +2,13 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useEffect } from 'react';
+import { useRecoilValue } from 'recoil';
+import { modalState } from '../atoms/modalAtom';
 import Banner from '../components/Banner';
 import Header from '../components/Header';
+import Modal from '../components/Modal';
 import Row from '../components/Row';
+import useAuth from '../hooks/useAuth';
 import requests from '../utils/requests';
 import { Movie } from '../utils/types';
 
@@ -28,9 +32,22 @@ const Home = ({
 	topRated,
 	trendingNow,
 }: Props) => {
-	useEffect(() => {
-		console.log('Netflix Originals : ', netflixOriginals);
-	}, []);
+	const { SignOut, loading } = useAuth();
+	const showModal = useRecoilValue(modalState);
+
+	if (loading) {
+		return (
+			<div className="relative flex h-[100vh] w-full items-center justify-center ">
+				<div
+					className="spinner-border inline-block h-8 w-8 animate-spin rounded-full border-4 text-red-500"
+					role="status"
+				>
+					<span className="visually-hidden">Loading...</span>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="lg:h-140vh relative h-screen bg-gradient-to-b to-[#010511]">
 			<Head>
@@ -51,10 +68,11 @@ const Home = ({
 					<Row title="Documentaries" movies={documentaries} />
 				</section>
 				{/* Modal */}
+				<Modal />
 			</main>
 		</div>
 	);
-};
+};;;;;;
 
 export default Home;
 
