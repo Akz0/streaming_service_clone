@@ -1,3 +1,4 @@
+import { getProducts, Product } from '@stripe/firestore-stripe-payments';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -6,9 +7,12 @@ import { useRecoilValue } from 'recoil';
 import { modalState } from '../atoms/modalAtom';
 import Banner from '../components/Banner';
 import Header from '../components/Header';
+import Loader from '../components/Loader';
 import Modal from '../components/Modal';
+import Plans from '../components/Plans';
 import Row from '../components/Row';
 import useAuth from '../hooks/useAuth';
+import Payments from '../lib/stripe';
 import requests from '../utils/requests';
 import { Movie } from '../utils/types';
 
@@ -21,6 +25,7 @@ interface Props {
 	horrorMovies: Movie[];
 	romanceMovies: Movie[];
 	documentaries: Movie[];
+	products: Product[];
 }
 const Home = ({
 	netflixOriginals,
@@ -31,21 +36,19 @@ const Home = ({
 	romanceMovies,
 	topRated,
 	trendingNow,
+	products,
 }: Props) => {
 	const { SignOut, loading } = useAuth();
 	const showModal = useRecoilValue(modalState);
+	const subscriptions = false;
 
-	if (loading) {
-		return (
-			<div className="relative flex h-[100vh] w-full items-center justify-center ">
-				<div
-					className="spinner-border inline-block h-8 w-8 animate-spin rounded-full border-4 text-red-500"
-					role="status"
-				>
-					<span className="visually-hidden">Loading...</span>
-				</div>
-			</div>
-		);
+	console.log(products);
+	if (loading || subscriptions == null) {
+		return <Loader color="fill-white" />;
+	}
+
+	if (!subscriptions) {
+		return <Plans products={products} />;
 	}
 
 	return (
@@ -72,11 +75,18 @@ const Home = ({
 			</main>
 		</div>
 	);
-};;;;;;
+};
 
 export default Home;
 
 export const getServerSideProps = async () => {
+	const products = await getProducts(Payments, {
+		includePrices: true,
+		activeOnly: true,
+	})
+		.then((response) => response)
+		.catch((error) => console.log(error.message));
+
 	const [
 		netflixOriginals,
 		trendingNow,
@@ -107,6 +117,7 @@ export const getServerSideProps = async () => {
 			horrorMovies: horrorMovies.results,
 			romanceMovies: romanceMovies.results,
 			documentaries: documentaries.results,
+			products,
 		},
 	};
 };

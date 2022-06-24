@@ -57,7 +57,9 @@ function Login() {
                 md:mt-0 md:max-w-md md:px-14
             "
 			>
-				<h1 className="text-4xl font-semibold">Sign In</h1>
+				<h1 className="text-4xl font-semibold">
+					{login ? 'Sign In' : 'Sign Up'}
+				</h1>
 				<div className="space-y-4">
 					<label htmlFor="" className="inline-block w-full">
 						<input
@@ -91,24 +93,47 @@ function Login() {
 						)}
 					</label>
 				</div>
-				<button
-					type="submit"
-					onClick={() => setLogin(true)}
-					className="w-full rounded bg-[#e50914] py-3"
-				>
-					Sign In
-				</button>
-
-				<div className="text-[gray]">
-					New to Netflix?{'     '}
+				{login ? (
 					<button
 						type="submit"
-						className="text-white hover:underline"
-						onClick={() => setLogin(false)}
+						onClick={() => setLogin(true)}
+						className="w-full rounded bg-[#e50914] py-3"
 					>
-						Sign Up Now
+						Sign In
 					</button>
-				</div>
+				) : (
+					<button
+						type="submit"
+						onClick={() => setLogin(false)}
+						className="w-full rounded bg-[#e50914] py-3"
+					>
+						Sign Up
+					</button>
+				)}
+
+				{login ? (
+					<div className="text-[gray]">
+						New to Netflix?{'     '}
+						<button
+							type="button"
+							className="text-white hover:underline"
+							onClick={() => setLogin(false)}
+						>
+							Sign Up Now
+						</button>
+					</div>
+				) : (
+					<div className="text-[gray]">
+						Already a User?{'     '}
+						<button
+							type="button"
+							className="text-white hover:underline"
+							onClick={() => setLogin(true)}
+						>
+							Sign In
+						</button>
+					</div>
+				)}
 			</form>
 		</div>
 	);
