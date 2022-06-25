@@ -12,6 +12,7 @@ import Modal from '../components/Modal';
 import Plans from '../components/Plans';
 import Row from '../components/Row';
 import useAuth from '../hooks/useAuth';
+import useSubsciption from '../hooks/useSubsciption';
 import Payments from '../lib/stripe';
 import requests from '../utils/requests';
 import { Movie } from '../utils/types';
@@ -38,13 +39,16 @@ const Home = ({
 	trendingNow,
 	products,
 }: Props) => {
-	const { SignOut, loading } = useAuth();
+	const { SignOut, loading, user } = useAuth();
 	const showModal = useRecoilValue(modalState);
-	const subscriptions = false;
+	const subscriptions = useSubsciption(user);
 
-	console.log(products);
-	if (loading || subscriptions == null) {
-		return <Loader color="fill-white" />;
+	if (loading) {
+		return (
+			<div className="flex h-[50vh] w-full items-center justify-center">
+				<Loader color="fill-white" />
+			</div>
+		);
 	}
 
 	if (!subscriptions) {

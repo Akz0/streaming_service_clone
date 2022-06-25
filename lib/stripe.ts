@@ -10,7 +10,7 @@ const Payments = getStripePayments(FireApp, {
 	productsCollection: 'products',
 });
 
-const LoadCheckout = async (priceId: 'string') => {
+const LoadCheckout = async (priceId: string) => {
 	await createCheckoutSession(Payments, {
 		price: priceId,
 		success_url: window.location.origin,
@@ -20,5 +20,20 @@ const LoadCheckout = async (priceId: 'string') => {
 		.catch((error) => console.log(error.message));
 };
 
-export { LoadCheckout };
+const ManageMembership = async () => {
+	const instance = getFunctions(FireApp, 'us-central1');
+	const functionRef = httpsCallable(
+		instance,
+		'ext-firestore-stripe-payments-createPortalLink',
+		{}
+	);
+
+	await functionRef({
+		returnUrl: `${window.location.origin}/profile`,
+	})
+		.then(({ data }: any) => [window.location.assign(data.url)])
+		.catch((errors) => console.error(errors.message));
+};
+
+export { LoadCheckout, ManageMembership };
 export default Payments;
