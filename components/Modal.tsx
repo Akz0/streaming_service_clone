@@ -1,4 +1,5 @@
 import {
+	CheckIcon,
 	PlusIcon,
 	ThumbUpIcon,
 	VolumeOffIcon,
@@ -6,18 +7,120 @@ import {
 	XIcon,
 } from '@heroicons/react/solid';
 import MuiModal from '@mui/material/Modal';
+import { fontWeight } from '@mui/system';
+import {
+	addDoc,
+	collection,
+	deleteDoc,
+	doc,
+	DocumentData,
+	onSnapshot,
+	setDoc,
+} from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import { FaPlay } from 'react-icons/fa';
 import ReactPlayer from 'react-player/lazy';
 import { useRecoilState } from 'recoil';
 import { modalState, movieState } from '../atoms/modalAtom';
-import { Element, Genre } from '../utils/types';
+import { FireDB } from '../firebase';
+import useAuth from '../hooks/useAuth';
+import { WishListCollection } from '../utils/constants';
+import { Element, Genre, Movie } from '../utils/types';
 function Modal() {
 	const [showModal, setShowModal] = useRecoilState(modalState);
 	const [movie, setMovie] = useRecoilState(movieState);
 	const [muted, setMuted] = useState<boolean>(false);
 	const [trailer, setTrailer] = useState<string>('');
 	const [genres, setGenres] = useState<Genre[]>([]);
+	const [inWishlist, setInWishlist] = useState<boolean>(false);
+	const { user } = useAuth();
+	const [wishListMovies, setWishListMovies] = useState<
+		Movie[] | DocumentData[]
+	>([]);
+
+	// Get Users wishlist
+	useEffect(() => {
+		if (user) {
+			return onSnapshot(
+				collection(FireDB, 'customers', user.uid, WishListCollection),
+				(snapshot) => setWishListMovies(snapshot.docs)
+			);
+		}
+	}, [FireDB, movie?.id]);
+
+	// Check If Movie Already exists in the wishlist
+	useEffect(() => {
+		setInWishlist(
+			wishListMovies.findIndex((result) => result.data().id === movie?.id) !==
+				-1
+		);
+	}, [wishListMovies]);
+
+	const handleToast = (title: string, message: string) => {
+		toast(
+			(t) => (
+				<span className="flex w-auto items-center justify-between gap-x-5">
+					<p className="w-auto font-light">
+						<b className="font-bold">{title} </b>
+						{message}
+					</p>
+					<button onClick={() => toast.dismiss(t.id)}>
+						<XIcon className="h-3 w-3 " />
+					</button>
+				</span>
+			),
+			{
+				style: {
+					background: 'white',
+					color: 'black',
+					fontSize: '16px',
+					padding: '7px',
+					borderRadius: '5px',
+					maxWidth: '1000px',
+				},
+				position: 'bottom-center',
+				duration: 5000,
+			}
+		);
+	};
+	const handleList = async () => {
+		if (inWishlist) {
+			await deleteDoc(
+				doc(
+					FireDB,
+					'customers',
+					user!.uid,
+					WishListCollection,
+					movie?.id.toString()
+				)
+			).then((response) => {
+				handleToast(
+					movie?.name || movie?.title || movie?.original_name,
+					` has been removed from your wishlist.`
+				);
+				setInWishlist(false);
+			});
+		} else {
+			await setDoc(
+				doc(
+					FireDB,
+					'customers',
+					user!.uid,
+					WishListCollection,
+					movie?.id.toString()
+				),
+				{ ...movie }
+			).then((response) => {
+				handleToast(
+					movie?.name || movie?.title || movie?.original_name,
+					` has been added to your wishlist.`
+				);
+				setInWishlist(true);
+			});
+		}
+	};
+
 	const handleClose = () => {
 		setShowModal(false);
 	};
@@ -28,9 +131,6 @@ function Modal() {
 	useEffect(() => {
 		if (!movie) return;
 
-		// console.log(
-		// 	`Trailer Fetched with Movie - ${movie?.id} ${movie?.name || movie?.title}`
-		// );
 		async function fetchMovie() {
 			const data = await fetch(
 				`https://api.themoviedb.org/3/${
@@ -64,6 +164,7 @@ function Modal() {
 				overflow-y-auto rounded-md scrollbar-hide"
 			>
 				<>
+					<Toaster />
 					<button
 						onClick={handleClose}
 						className="modalButton absolute right-5 top-5 !z-50 h-9 w-9
@@ -96,8 +197,15 @@ function Modal() {
 									Play
 								</button>
 
-								<button className="modalButton bg-[#646464aa] hover:bg-[#919191]">
-									<PlusIcon className="h-5 w-5 " />
+								<button
+									onClick={handleList}
+									className="modalButton bg-[#646464aa] hover:bg-[#919191]"
+								>
+									{inWishlist ? (
+										<CheckIcon className="h-5 w-5 " />
+									) : (
+										<PlusIcon className="h-5 w-5 " />
+									)}
 								</button>
 
 								<button className="modalButton bg-[#646464aa] hover:bg-[#919191]">
