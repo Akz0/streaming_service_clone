@@ -43,7 +43,7 @@ const Home = ({
 	const showModal = useRecoilValue(modalState);
 	const subscriptions = useSubsciption(user);
 
-	if (loading) {
+	if (loading || subscriptions === null) {
 		return (
 			<div className="flex h-[50vh] w-full items-center justify-center">
 				<Loader color="fill-white" />

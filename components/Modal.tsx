@@ -231,7 +231,7 @@ function Modal() {
 						<div className="space-y-6 text-lg">
 							<div className="flex items-center space-x-2 text-sm">
 								<p className="font-semibold text-green-400">
-									{movie?.vote_average * 10} % Match
+									{`${Math.floor(movie?.vote_average * 10)}`}%
 								</p>
 								<p className="font-light">
 									{movie?.release_date || movie?.first_air_date}
@@ -245,7 +245,12 @@ function Modal() {
 							</div>
 
 							<div className="flex flex-col gap-x-10 gap-y-4 font-light md:flex-row">
-								<p className="w-5/6 md:w-2/3">{movie?.overview}</p>
+								<div className="w-5/6 md:w-2/3">
+									<p className='className=" mb-2 text-2xl font-bold'>
+										{movie?.name || movie?.title}{' '}
+									</p>
+									<p className="">{movie?.overview}</p>
+								</div>
 								<div className="flex flex-col space-y-3 text-sm">
 									<div className="">
 										<span className="text-[gray]">Genres : </span>

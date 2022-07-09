@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { baseImageURL } from '../utils/constants';
 import { Movie } from '../utils/types';
-import { FaPlay } from 'react-icons/fa';
+import { FaPlay, FaSyncAlt } from 'react-icons/fa';
 import { InformationCircleIcon } from '@heroicons/react/solid';
 import { modalState, movieState } from '../atoms/modalAtom';
 import { useRecoilState } from 'recoil';
@@ -14,12 +14,13 @@ function Banner({ netflixOriginals }: Props) {
 	const [currentMovie, setCurrentMovie] = useRecoilState(movieState);
 	const [movie, setMovie] = useState<Movie | null>(null);
 
-	useEffect(() => {
+	const changeNewMovie = () => {
 		const newMovie =
 			netflixOriginals[Math.floor(Math.random() * netflixOriginals.length)];
 		setMovie(newMovie);
-
-		console.log('Movie in Banner : ', newMovie);
+	};
+	useEffect(() => {
+		changeNewMovie();
 	}, [netflixOriginals]);
 	const imageURL = `${baseImageURL}${
 		movie?.backdrop_path || movie?.poster_path
@@ -43,18 +44,24 @@ function Banner({ netflixOriginals }: Props) {
 			</p>
 
 			<div className="flex space-x-3">
+				<button className="bannerButton bg-white text-black">
+					<FaPlay className="h-4 w-4 text-black md:h-7 md:w-7" /> Play
+				</button>
 				<button
-					className="bannerButton bg-white text-black"
+					className="bannerButton bg-[gray]/70"
 					onClick={() => {
 						setShowModal(true);
 						setCurrentMovie(movie);
 					}}
 				>
-					<FaPlay className="h-4 w-4 text-black md:h-7 md:w-7" /> Play
-				</button>
-				<button className="bannerButton bg-[gray]/70">
 					<InformationCircleIcon className="h-5 w-5 md:h-8 md:w-8" />
 					More Info
+				</button>
+				<button
+					className="bannerButton bg-transparent p-0"
+					onClick={changeNewMovie}
+				>
+					<FaSyncAlt className="h-5 w-5" />
 				</button>
 			</div>
 		</div>
