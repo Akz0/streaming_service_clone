@@ -1,6 +1,6 @@
 # Netflix Clone
 
-[](http://netflix-om.vercel.app)
+[http://netflix-om.vercel.app](http://netflix-om.vercel.app)
 
 A clone of popular streaming service Netflix with Authentications and Payment Subscriptions.
 
