@@ -1,23 +1,23 @@
-# Next.js + Tailwind CSS Example
+# Netflix Clone
 
-This example shows how to use [Tailwind CSS](https://tailwindcss.com/) [(v3.0)](https://tailwindcss.com/blog/tailwindcss-v3) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
+(http://netflix-om.vercel.app)[http://netflix-om.vercel.app]
 
-## Deploy your own
+A clone of popular streaming service Netflix with Authentications and Payment Subscriptions.
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example) or preview live with [StackBlitz](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-tailwindcss)
+### Demo 
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-tailwindcss&project-name=with-tailwindcss&repository-name=with-tailwindcss)
+[Netflix Demo.webm](https://user-images.githubusercontent.com/69624554/196932597-cfe8e281-a8e4-4d71-a89e-79f64647254f.webm)
 
-## How to use
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
+### Technologies Used
+- Next JS 
+- Tailwind CSS
+- Firebase  
+- Stripe 
 
-```bash
-npx create-next-app --example with-tailwindcss with-tailwindcss-app
-# or
-yarn create next-app --example with-tailwindcss with-tailwindcss-app
-# or
-pnpm create next-app -- --example with-tailwindcss with-tailwindcss-app
-```
+### I Learned
+- Static Site Generation using Next JS
+- How to create custom components and theme Tailwind CSS
+- Stripe Subscription Management
+- Automating Firebase and Stripe using the SDK provided.
 
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
